@@ -1,0 +1,71 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;    //agregar esto
+
+
+public class monon : MonoBehaviour {
+	
+	public float speed = 4f;  
+	Animator anim;                    //que cargue la animation de caminar
+	Rigidbody2D rb2d;             //para el movimiento y contacto con otros objetos
+	Vector2 movimiento;									//Ahora es visible entre los métodos
+
+	public float newen = 20f;
+	public static string contadorNewen;					//para poder insertarlo en camara.Text tenía que ser un string
+
+	public bool vida = true;      
+
+
+  //esto nunca lo terminé (el nazi quita vida)
+	//void OnTriggerEnter2D (Collider2D other)
+	//{
+	//	if (other.gameObject.tag == "Enemigos") {
+	//		monon.newen -= Time.deltaTime * 10;
+	//	}
+	//}
+
+//quizás esto debería ser Awake
+	void Start () {
+		anim = GetComponent<Animator> ();
+		rb2d = GetComponent<Rigidbody2D> ();
+	}
+
+	void Update () {
+
+		movimiento = new Vector2 (
+			Input.GetAxisRaw ("Horizontal"),
+			Input.GetAxisRaw ("Vertical")
+		);
+
+	 //movimiento
+		if (movimiento != Vector2.zero) {
+			anim.SetFloat ("movX", movimiento.x);
+			anim.SetFloat ("movY", movimiento.y);
+			anim.SetBool ("walking", true);
+		} else {
+			anim.SetBool ("walking", false);
+		}
+
+
+		newen -= Time.deltaTime * 2;    //la vida disminuye a esta velocidad
+		contadorNewen = newen.ToString("#.0");    //esto transforma newen.float --> newen.string (para el contador de newen)
+
+		//print (contadorNewen);		//sólo para probar el contador
+		//print (vida);
+
+//newen = hp
+		if (newen <= 0) {
+			vida = false;
+		} else {
+			vida = true;
+		}
+	}
+
+
+//leí en varios lados que las físicas se ponen en FixedUpdate
+	void FixedUpdate() {
+				rb2d.MovePosition (rb2d.position + movimiento * speed * Time.deltaTime);
+	}
+
+}
